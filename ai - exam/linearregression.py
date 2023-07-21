@@ -1,8 +1,9 @@
 import pandas as pd
-import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, r2_score
+import matplotlib.pyplot as plt
 
 # Load the dataset
 data = pd.read_csv('housing.csv')
@@ -21,10 +22,16 @@ X = pd.get_dummies(X, columns=['ocean_proximity'], drop_first=True)
 # Split the data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
+# Apply Standardization to the numerical features
+numerical_features = X.select_dtypes(include=['float64', 'int64']).columns
+scaler = StandardScaler()
+X_train[numerical_features] = scaler.fit_transform(X_train[numerical_features])
+X_test[numerical_features] = scaler.transform(X_test[numerical_features])
+
 # Create the linear regression model
 model = LinearRegression()
 
-# Train the model
+# Train the model with scaled features
 model.fit(X_train, y_train)
 
 # Make predictions on the test set
@@ -38,6 +45,7 @@ r2 = r2_score(y_test, y_pred)
 print(f"Mean Squared Error (MSE): {mse}")
 print(f"Root Mean Squared Error (RMSE): {rmse}")
 print(f"R-squared (R2): {r2}")
+
 
 # Visualize the results with a scatter plot and regression line
 plt.figure(figsize=(10, 8))  # Set the figure size (width, height)
