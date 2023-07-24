@@ -5,21 +5,13 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, r2_score
 import matplotlib.pyplot as plt
 
-# Load the dataset
+#Data preprocessing
 data = pd.read_csv('housing.csv')
-
-# Data preprocessing
-# Drop rows with missing values
 data = data.dropna()
-
-# Split the data into features (X) and target (y)
 X = data.drop(columns=['median_house_value'])
 y = data['median_house_value']
 
-# Convert categorical variables using one-hot encoding
 X = pd.get_dummies(X, columns=['ocean_proximity'], drop_first=True)
-
-# Split the data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Apply Standardization to the numerical features
@@ -28,13 +20,10 @@ scaler = StandardScaler()
 X_train[numerical_features] = scaler.fit_transform(X_train[numerical_features])
 X_test[numerical_features] = scaler.transform(X_test[numerical_features])
 
-# Create the linear regression model
+# Initiate and fit linear regression model
 model = LinearRegression()
-
-# Train the model with scaled features
 model.fit(X_train, y_train)
 
-# Make predictions on the test set
 y_pred = model.predict(X_test)
 
 # Evaluate the model
@@ -47,11 +36,11 @@ print(f"Root Mean Squared Error (RMSE): {rmse}")
 print(f"R-squared (R2): {r2}")
 
 
-# Visualize the results with a scatter plot and regression line
-plt.figure(figsize=(10, 8))  # Set the figure size (width, height)
-plt.scatter(y_test, y_pred)
-plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], color='red', linestyle='--')  # Add the regression line
-plt.xlabel("Actual Median House Value")
-plt.ylabel("Predicted Median House Value")
-plt.title("Linear Regression: Actual vs. Predicted")
-plt.show()
+# Un-comment to visualize linear regression
+#plt.figure(figsize=(10, 8)) 
+#plt.scatter(y_test, y_pred)
+#plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], color='red', linestyle='--') 
+#plt.xlabel("Actual Median House Value")
+#plt.ylabel("Predicted Median House Value")
+#plt.title("Linear Regression: Actual vs. Predicted")
+#plt.show()
